@@ -27,6 +27,54 @@
             --danger: #dc3545;
         }
 
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(196, 30, 58, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(196, 30, 58, 0.6); }
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
@@ -49,17 +97,20 @@
             margin-bottom: 30px;
             border-radius: 0 0 20px 20px;
             box-shadow: 0 4px 20px rgba(196, 30, 58, 0.3);
+            animation: fadeInUp 0.6s ease-out;
         }
 
         header h1 {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 8px;
+            animation: fadeIn 0.8s ease-out 0.2s both;
         }
 
         header p {
             opacity: 0.9;
             font-size: 1rem;
+            animation: fadeIn 0.8s ease-out 0.4s both;
         }
 
         .card {
@@ -68,6 +119,13 @@
             padding: 24px;
             margin-bottom: 20px;
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            animation: fadeInUp 0.5s ease-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         }
 
         .card-title {
@@ -91,6 +149,7 @@
             padding: 10px 12px;
             text-align: center;
             border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
         }
 
         .grading-table th {
@@ -107,7 +166,7 @@
         }
 
         .grading-table tr:hover td {
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #fff5f7 0%, #ffe8ec 100%);
         }
 
         .course-entry {
@@ -117,21 +176,11 @@
             align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid var(--border-color);
+            animation: slideInLeft 0.4s ease-out;
         }
 
         .course-entry:last-of-type {
             border-bottom: none;
-        }
-
-        @media (max-width: 600px) {
-            .course-entry {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-
-            .course-entry input[type="text"] {
-                grid-column: 1 / -1;
-            }
         }
 
         input, select {
@@ -140,13 +189,14 @@
             border-radius: 8px;
             font-size: 0.95rem;
             font-family: inherit;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
         }
 
         input:focus, select:focus {
             outline: none;
             border-color: var(--ntu-red);
             box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.1);
+            transform: scale(1.02);
         }
 
         input[type="number"] {
@@ -165,8 +215,28 @@
             font-size: 0.95rem;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
             font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+
+        .btn:active::after {
+            width: 200px;
+            height: 200px;
         }
 
         .btn-primary {
@@ -175,8 +245,8 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(196, 30, 58, 0.4);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(196, 30, 58, 0.4);
         }
 
         .btn-secondary {
@@ -186,6 +256,7 @@
 
         .btn-secondary:hover {
             background: #e9ecef;
+            transform: translateY(-2px);
         }
 
         .btn-danger {
@@ -198,6 +269,7 @@
         .btn-danger:hover {
             background: #fee;
             border-radius: 50%;
+            transform: rotate(90deg);
         }
 
         .button-group {
@@ -218,17 +290,28 @@
             padding: 24px;
             background: var(--bg-primary);
             border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .result-box:hover {
+            transform: scale(1.05);
         }
 
         .result-box.primary {
             background: linear-gradient(135deg, var(--ntu-red) 0%, var(--ntu-dark) 100%);
             color: white;
+            animation: pulse 2s infinite;
         }
 
         .result-value {
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .result-value.updated {
+            animation: bounce 0.5s ease;
         }
 
         .result-label {
@@ -252,11 +335,17 @@
             border-radius: 20px;
             font-weight: 600;
             font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .classification-badge:hover {
+            transform: scale(1.1);
         }
 
         .first-class {
             background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
             color: #5a4800;
+            animation: glow 2s infinite;
         }
 
         .second-upper {
@@ -291,6 +380,7 @@
             border-radius: 0 8px 8px 0;
             font-size: 0.9rem;
             margin-top: 16px;
+            animation: fadeIn 0.5s ease-out;
         }
 
         .info-note strong {
@@ -302,15 +392,18 @@
             padding: 30px;
             color: var(--text-secondary);
             font-size: 0.85rem;
+            animation: fadeIn 1s ease-out;
         }
 
         footer a {
             color: var(--ntu-red);
             text-decoration: none;
+            transition: color 0.3s;
         }
 
         footer a:hover {
             text-decoration: underline;
+            color: var(--ntu-dark);
         }
 
         #no-courses {
@@ -323,7 +416,242 @@
             display: none;
         }
 
-        /* Mobile Responsive Styles */
+        /* Grade Explorer Styles */
+        .explorer-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 2px dashed var(--border-color);
+        }
+
+        .explorer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .explorer-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .explorer-title span {
+            animation: bounce 1s infinite;
+        }
+
+        .explorer-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .explorer-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .explorer-input label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .explorer-input input {
+            width: 70px;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .combinations-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .combinations-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .combo-category {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .combo-category-header {
+            padding: 16px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .combo-category-header:hover {
+            filter: brightness(1.1);
+        }
+
+        .combo-category-header.best-header {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .combo-category-header.mid-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .combo-category-header.low-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .combo-category-icon {
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        .combo-category-info h4 {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .combo-category-info p {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .combo-count {
+            margin-left: auto;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .combo-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .combo-card {
+            background: white;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .combo-card:hover {
+            transform: translateX(5px);
+            border-color: var(--ntu-red);
+            box-shadow: 0 4px 15px rgba(196, 30, 58, 0.2);
+        }
+
+        .combo-card.selected {
+            border-color: var(--ntu-red);
+            background: linear-gradient(135deg, #fff5f7 0%, #ffe8ec 100%);
+            animation: pulse 1s;
+        }
+
+        .combo-cgpa {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ntu-red);
+            margin-bottom: 8px;
+        }
+
+        .combo-grades {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .combo-grade-chip {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #e9ecef 100%);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .combo-grade-chip:hover {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, var(--ntu-red) 0%, var(--ntu-dark) 100%);
+            color: white;
+        }
+
+        .combo-apply-btn {
+            width: 100%;
+            padding: 8px;
+            background: linear-gradient(135deg, var(--ntu-red) 0%, var(--ntu-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .combo-card:hover .combo-apply-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .combo-apply-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(196, 30, 58, 0.3);
+        }
+
+        .no-combos {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+        }
+
+        .total-combos {
+            text-align: center;
+            margin-top: 16px;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            animation: shimmer 3s linear infinite;
+            background-size: 200% 100%;
+        }
+
+        /* Mobile Responsive */
         @media (max-width: 768px) {
             header {
                 padding: 30px 16px;
@@ -332,10 +660,6 @@
 
             header h1 {
                 font-size: 1.5rem;
-            }
-
-            header p {
-                font-size: 0.9rem;
             }
 
             .container {
@@ -347,29 +671,6 @@
                 border-radius: 12px;
             }
 
-            .card-title {
-                font-size: 1rem;
-            }
-
-            /* Make grading table scrollable */
-            .table-wrapper {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                margin: 0 -16px;
-                padding: 0 16px;
-            }
-
-            .grading-table {
-                font-size: 0.75rem;
-                min-width: 500px;
-            }
-
-            .grading-table th,
-            .grading-table td {
-                padding: 8px 6px;
-            }
-
-            /* Course entry mobile layout */
             .course-entry {
                 grid-template-columns: 1fr auto;
                 gap: 8px;
@@ -379,22 +680,28 @@
                 grid-column: 1 / -1;
             }
 
-            .course-entry input[type="number"] {
-                width: 70px;
-            }
-
-            .course-entry select {
-                width: 100px;
-            }
-
             input, select {
                 padding: 12px 10px;
-                font-size: 16px; /* Prevents zoom on iOS */
+                font-size: 16px;
             }
 
-            .btn {
-                padding: 14px 20px;
-                font-size: 1rem;
+            .results {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .result-value {
+                font-size: 2rem;
+            }
+
+            .explorer-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .explorer-controls {
+                width: 100%;
+                flex-wrap: wrap;
             }
 
             .button-group {
@@ -406,48 +713,16 @@
                 text-align: center;
             }
 
-            /* Results section mobile */
-            .results {
-                grid-template-columns: 1fr;
-                gap: 12px;
+            .table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                margin: 0 -16px;
+                padding: 0 16px;
             }
 
-            .result-box {
-                padding: 20px 16px;
-            }
-
-            .result-value {
-                font-size: 2rem;
-            }
-
-            .classification {
-                padding: 12px;
-            }
-
-            .classification-badge {
-                padding: 8px 16px;
-                font-size: 0.85rem;
-            }
-
-            /* Degree classification table mobile */
-            .classification-table {
-                min-width: auto !important;
-            }
-
-            .grading-table .classification-badge {
-                padding: 6px 10px;
-                font-size: 0.7rem;
-                white-space: nowrap;
-            }
-
-            .info-note {
-                padding: 10px 12px;
-                font-size: 0.85rem;
-            }
-
-            footer {
-                padding: 20px 16px;
-                font-size: 0.8rem;
+            .grading-table {
+                font-size: 0.75rem;
+                min-width: 500px;
             }
         }
 
@@ -480,201 +755,6 @@
             .result-value {
                 font-size: 1.8rem;
             }
-
-            .grading-table .classification-badge {
-                font-size: 0.65rem;
-                padding: 4px 8px;
-            }
-
-            /* Target calculator mobile styles */
-            #target-calculator > div[style*="grid-template-columns: 1fr 1fr"] {
-                grid-template-columns: 1fr !important;
-            }
-        }
-
-        /* Grade Scenarios Styles */
-        .scenarios-container {
-            margin-top: 20px;
-        }
-
-        .scenario-category {
-            margin-bottom: 16px;
-        }
-
-        .category-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 8px;
-        }
-
-        .category-header:hover {
-            transform: translateX(4px);
-        }
-
-        .category-header.best {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            border-left: 4px solid #4caf50;
-        }
-
-        .category-header.mid {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-            border-left: 4px solid #ff9800;
-        }
-
-        .category-header.worst {
-            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
-            border-left: 4px solid #e91e63;
-        }
-
-        .category-icon {
-            font-size: 1.5rem;
-        }
-
-        .category-title {
-            flex: 1;
-        }
-
-        .category-title h4 {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .category-title p {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-
-        .category-toggle {
-            font-size: 1.2rem;
-            transition: transform 0.3s;
-        }
-
-        .category-toggle.expanded {
-            transform: rotate(180deg);
-        }
-
-        .scenario-list {
-            display: none;
-            padding: 0 8px;
-        }
-
-        .scenario-list.expanded {
-            display: block;
-        }
-
-        .scenario-card {
-            background: white;
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .scenario-card:hover {
-            border-color: var(--ntu-red);
-            box-shadow: 0 4px 12px rgba(196, 30, 58, 0.15);
-        }
-
-        .scenario-card.selected {
-            border-color: var(--ntu-red);
-            background: linear-gradient(135deg, #fff5f7 0%, #ffe8ec 100%);
-        }
-
-        .scenario-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .scenario-cgpa {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--ntu-red);
-        }
-
-        .scenario-badge {
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 12px;
-        }
-
-        .scenario-grades {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .grade-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 6px 12px;
-            background: var(--bg-primary);
-            border-radius: 20px;
-            font-size: 0.85rem;
-        }
-
-        .grade-chip .course-num {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-        }
-
-        .grade-chip .grade-value {
-            font-weight: 600;
-        }
-
-        .apply-scenario-btn {
-            width: 100%;
-            margin-top: 12px;
-            padding: 10px;
-            background: linear-gradient(135deg, var(--ntu-red) 0%, var(--ntu-dark) 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .apply-scenario-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
-        }
-
-        .no-scenarios {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-
-        @media (max-width: 480px) {
-            .scenario-grades {
-                gap: 6px;
-            }
-
-            .grade-chip {
-                padding: 4px 8px;
-                font-size: 0.8rem;
-            }
-
-            .category-header {
-                padding: 10px 12px;
-            }
-
-            .category-title h4 {
-                font-size: 0.85rem;
-            }
         }
     </style>
 </head>
@@ -686,7 +766,7 @@
 
     <div class="container">
         <!-- Grading Reference -->
-        <div class="card">
+        <div class="card" style="animation-delay: 0.1s;">
             <h2 class="card-title">NTU Grading Scale (5.0 System)</h2>
             <div class="table-wrapper">
                 <table class="grading-table">
@@ -727,7 +807,7 @@
         </div>
 
         <!-- Course Input -->
-        <div class="card">
+        <div class="card" style="animation-delay: 0.2s;">
             <h2 class="card-title">Your Courses</h2>
 
             <div id="courses-container">
@@ -749,7 +829,7 @@
         </div>
 
         <!-- Results -->
-        <div class="card" id="results-card">
+        <div class="card" id="results-card" style="animation-delay: 0.3s;">
             <h2 class="card-title">Your Results</h2>
 
             <div class="results">
@@ -771,88 +851,34 @@
                 <p style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.9rem;">Degree Classification</p>
                 <span class="classification-badge" id="classification">N/A</span>
             </div>
-        </div>
 
-        <!-- Target GPA Calculator -->
-        <div class="card" id="target-calculator" style="display: none;">
-            <h2 class="card-title">Target CGPA Calculator</h2>
-            <p id="target-description" style="color: var(--text-secondary); margin-bottom: 16px;">
-                Calculate what grades you need in remaining courses to achieve your target CGPA.
-            </p>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                <div>
-                    <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">Remaining Courses</label>
-                    <input type="number" id="remaining-courses" min="1" max="20" value="1" onchange="calculateTarget()" style="width: 100%;">
-                </div>
-                <div>
-                    <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">AU per Course</label>
-                    <input type="number" id="remaining-au" min="1" max="12" value="3" onchange="calculateTarget()" style="width: 100%;">
-                </div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                <div>
-                    <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">Target CGPA</label>
-                    <select id="target-cgpa" onchange="calculateTarget()" style="width: 100%;">
-                        <option value="4.0">4.0 (Second Upper)</option>
-                        <option value="4.5">4.5 (First Class)</option>
-                    </select>
-                </div>
-                <div></div>
-            </div>
-
-            <div id="target-result" class="info-note" style="background: #e8f5e9; border-left-color: #4caf50;">
-                <!-- Results will be shown here -->
-            </div>
-
-            <!-- Grade Scenarios Section -->
-            <div id="scenarios-section" class="scenarios-container" style="display: none;">
-                <h3 style="font-size: 1rem; margin-bottom: 12px; color: var(--text-primary);">Possible Grade Combinations</h3>
-
-                <!-- Best Case -->
-                <div class="scenario-category">
-                    <div class="category-header best" onclick="toggleCategory('best')">
-                        <span class="category-icon">🌟</span>
-                        <div class="category-title">
-                            <h4>Best Case Scenarios</h4>
-                            <p>Aim high - maximize your potential</p>
-                        </div>
-                        <span class="category-toggle" id="toggle-best">▼</span>
+            <!-- Grade Explorer Section -->
+            <div class="explorer-section">
+                <div class="explorer-header">
+                    <div class="explorer-title">
+                        <span>🎯</span> Grade Combination Explorer
                     </div>
-                    <div class="scenario-list" id="scenarios-best"></div>
+                    <div class="explorer-controls">
+                        <div class="explorer-input">
+                            <label>Courses:</label>
+                            <input type="number" id="explore-courses" min="1" max="4" value="2">
+                        </div>
+                        <div class="explorer-input">
+                            <label>AU each:</label>
+                            <input type="number" id="explore-au" min="1" max="6" value="3">
+                        </div>
+                        <button class="generate-btn" onclick="generateAllCombinations()">
+                            Generate All
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Mid Case -->
-                <div class="scenario-category">
-                    <div class="category-header mid" onclick="toggleCategory('mid')">
-                        <span class="category-icon">⚖️</span>
-                        <div class="category-title">
-                            <h4>Balanced Scenarios</h4>
-                            <p>Realistic mix of grades</p>
-                        </div>
-                        <span class="category-toggle" id="toggle-mid">▼</span>
-                    </div>
-                    <div class="scenario-list" id="scenarios-mid"></div>
-                </div>
-
-                <!-- Worst Case -->
-                <div class="scenario-category">
-                    <div class="category-header worst" onclick="toggleCategory('worst')">
-                        <span class="category-icon">🎯</span>
-                        <div class="category-title">
-                            <h4>Minimum Required</h4>
-                            <p>Just enough to hit target</p>
-                        </div>
-                        <span class="category-toggle" id="toggle-worst">▼</span>
-                    </div>
-                    <div class="scenario-list" id="scenarios-worst"></div>
-                </div>
+                <div id="combinations-container"></div>
             </div>
         </div>
 
         <!-- Degree Classification Reference -->
-        <div class="card">
+        <div class="card" style="animation-delay: 0.4s;">
             <h2 class="card-title">Degree Classification</h2>
             <div class="table-wrapper">
                 <table class="grading-table classification-table">
@@ -912,6 +938,7 @@
             'F': 0.0
         };
 
+        const gradeList = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'D+', 'D', 'F'];
         let courseCount = 0;
 
         function addCourse() {
@@ -955,21 +982,20 @@
         function removeCourse(id) {
             const courseDiv = document.getElementById(`course-${id}`);
             if (courseDiv) {
-                courseDiv.remove();
+                courseDiv.style.animation = 'fadeIn 0.3s ease-out reverse';
+                setTimeout(() => {
+                    courseDiv.remove();
+                    const container = document.getElementById('courses-container');
+                    const courses = container.querySelectorAll('.course-entry');
+                    if (courses.length === 0) {
+                        const noCourses = document.getElementById('no-courses');
+                        if (noCourses) {
+                            noCourses.classList.remove('hidden');
+                        }
+                    }
+                    calculateGPA();
+                }, 200);
             }
-
-            // Check if any courses remain
-            const container = document.getElementById('courses-container');
-            const courses = container.querySelectorAll('.course-entry');
-
-            if (courses.length === 0) {
-                const noCourses = document.getElementById('no-courses');
-                if (noCourses) {
-                    noCourses.classList.remove('hidden');
-                }
-            }
-
-            calculateGPA();
         }
 
         function clearAll() {
@@ -1009,16 +1035,16 @@
 
             const cgpa = totalAU > 0 ? (totalPoints / totalAU) : 0;
 
-            // Update display
+            // Animate the update
+            const cgpaEl = document.getElementById('cgpa');
+            cgpaEl.classList.add('updated');
+            setTimeout(() => cgpaEl.classList.remove('updated'), 500);
+
             document.getElementById('cgpa').textContent = cgpa.toFixed(2);
             document.getElementById('total-au').textContent = totalAU;
             document.getElementById('total-courses').textContent = validCourses;
 
-            // Update classification
             updateClassification(cgpa, validCourses);
-
-            // Update target calculator
-            calculateTarget();
         }
 
         function updateClassification(cgpa, courseCount) {
@@ -1051,17 +1077,12 @@
             }
         }
 
-        function calculateTarget() {
+        function getCurrentTotals() {
             const container = document.getElementById('courses-container');
             const courses = container.querySelectorAll('.course-entry');
-            const resultDiv = document.getElementById('target-result');
-            const targetCalc = document.getElementById('target-calculator');
-            const targetDescription = document.getElementById('target-description');
-            const targetSelect = document.getElementById('target-cgpa');
 
-            // Get current totals
-            let currentPoints = 0;
-            let currentAU = 0;
+            let totalPoints = 0;
+            let totalAU = 0;
 
             courses.forEach(course => {
                 const id = course.id.split('-')[1];
@@ -1069,162 +1090,15 @@
                 const grade = document.getElementById(`grade-${id}`).value;
 
                 if (grade && au > 0) {
-                    const points = gradePoints[grade];
-                    currentPoints += points * au;
-                    currentAU += au;
+                    totalPoints += gradePoints[grade] * au;
+                    totalAU += au;
                 }
             });
 
-            const currentCGPA = currentAU > 0 ? (currentPoints / currentAU) : 0;
-
-            // Show/hide calculator based on CGPA (show for CGPA < 4.5, i.e., not yet First Class)
-            if (currentCGPA > 0 && currentCGPA < 4.5) {
-                targetCalc.style.display = 'block';
-
-                // Update description and options based on current CGPA
-                if (currentCGPA >= 4.0) {
-                    targetDescription.textContent = 'You have Second Class Upper! Calculate what grades you need to achieve First Class Honours (4.5+).';
-                    // Only show 4.5 option
-                    targetSelect.innerHTML = '<option value="4.5">4.5 (First Class)</option>';
-                } else {
-                    targetDescription.textContent = 'Calculate what grades you need in remaining courses to achieve your target CGPA.';
-                    // Show both options
-                    targetSelect.innerHTML = `
-                        <option value="4.0">4.0 (Second Upper)</option>
-                        <option value="4.5">4.5 (First Class)</option>
-                    `;
-                }
-            } else {
-                targetCalc.style.display = 'none';
-                return;
-            }
-
-            // Get remaining courses info
-            const remainingCourses = parseInt(document.getElementById('remaining-courses').value) || 1;
-            const remainingAUPerCourse = parseInt(document.getElementById('remaining-au').value) || 3;
-            const targetCGPA = parseFloat(document.getElementById('target-cgpa').value);
-
-            const totalRemainingAU = remainingCourses * remainingAUPerCourse;
-            const totalAU = currentAU + totalRemainingAU;
-
-            // Calculate required points for target CGPA
-            // targetCGPA = (currentPoints + requiredPoints) / totalAU
-            // requiredPoints = (targetCGPA * totalAU) - currentPoints
-            const requiredPoints = (targetCGPA * totalAU) - currentPoints;
-            const requiredAvgGradePoint = requiredPoints / totalRemainingAU;
-
-            // Calculate maximum possible CGPA (all A+ in remaining)
-            const maxPossiblePoints = currentPoints + (5.0 * totalRemainingAU);
-            const maxPossibleCGPA = maxPossiblePoints / totalAU;
-
-            // Determine the grade needed
-            let gradeNeeded = '';
-            let gradeClass = '';
-
-            if (requiredAvgGradePoint <= 0) {
-                gradeNeeded = 'Any passing grade';
-                gradeClass = 'success';
-            } else if (requiredAvgGradePoint <= 1.0) {
-                gradeNeeded = 'D (1.0)';
-                gradeClass = 'success';
-            } else if (requiredAvgGradePoint <= 1.5) {
-                gradeNeeded = 'D+ (1.5)';
-                gradeClass = 'success';
-            } else if (requiredAvgGradePoint <= 2.0) {
-                gradeNeeded = 'C (2.0)';
-                gradeClass = 'success';
-            } else if (requiredAvgGradePoint <= 2.5) {
-                gradeNeeded = 'C+ (2.5)';
-                gradeClass = 'success';
-            } else if (requiredAvgGradePoint <= 3.0) {
-                gradeNeeded = 'B- (3.0)';
-                gradeClass = 'success';
-            } else if (requiredAvgGradePoint <= 3.5) {
-                gradeNeeded = 'B (3.5)';
-                gradeClass = 'success';
-            } else if (requiredAvgGradePoint <= 4.0) {
-                gradeNeeded = 'B+ (4.0)';
-                gradeClass = 'warning';
-            } else if (requiredAvgGradePoint <= 4.5) {
-                gradeNeeded = 'A- (4.5)';
-                gradeClass = 'warning';
-            } else if (requiredAvgGradePoint <= 5.0) {
-                gradeNeeded = 'A/A+ (5.0)';
-                gradeClass = 'danger';
-            } else {
-                gradeNeeded = 'Not achievable';
-                gradeClass = 'impossible';
-            }
-
-            // Build result HTML
-            let resultHTML = '';
-
-            if (requiredAvgGradePoint > 5.0) {
-                resultDiv.style.background = '#ffebee';
-                resultDiv.style.borderLeftColor = '#f44336';
-                resultHTML = `
-                    <strong style="color: #c62828;">Target CGPA of ${targetCGPA.toFixed(2)} is not achievable.</strong>
-                    <p style="margin-top: 8px;">Even with A+ in all ${remainingCourses} remaining course(s), your maximum possible CGPA would be <strong>${maxPossibleCGPA.toFixed(2)}</strong>.</p>
-                    <p style="margin-top: 8px;">Required average: ${requiredAvgGradePoint.toFixed(2)} points (exceeds maximum of 5.0)</p>
-                `;
-
-                // Show what classification they can achieve
-                let maxClassification = '';
-                if (maxPossibleCGPA >= 4.5) {
-                    maxClassification = 'First Class Honours';
-                } else if (maxPossibleCGPA >= 4.0) {
-                    maxClassification = 'Second Class Upper';
-                } else if (maxPossibleCGPA >= 3.5) {
-                    maxClassification = 'Second Class Lower';
-                } else if (maxPossibleCGPA >= 3.0) {
-                    maxClassification = 'Third Class';
-                } else if (maxPossibleCGPA >= 2.5) {
-                    maxClassification = 'Pass';
-                } else {
-                    maxClassification = 'Below graduation requirement';
-                }
-
-                resultHTML += `<p style="margin-top: 8px;">Best achievable classification: <strong>${maxClassification}</strong></p>`;
-            } else {
-                if (gradeClass === 'success') {
-                    resultDiv.style.background = '#e8f5e9';
-                    resultDiv.style.borderLeftColor = '#4caf50';
-                } else if (gradeClass === 'warning') {
-                    resultDiv.style.background = '#fff3e0';
-                    resultDiv.style.borderLeftColor = '#ff9800';
-                } else {
-                    resultDiv.style.background = '#ffebee';
-                    resultDiv.style.borderLeftColor = '#f44336';
-                }
-
-                resultHTML = `
-                    <strong>To achieve CGPA ${targetCGPA.toFixed(2)}:</strong>
-                    <p style="margin-top: 8px;">You need an average grade of at least <strong>${gradeNeeded}</strong> across your ${remainingCourses} remaining course(s) (${totalRemainingAU} AUs total).</p>
-                    <p style="margin-top: 8px;">Required average grade points: <strong>${requiredAvgGradePoint.toFixed(2)}</strong></p>
-                `;
-
-                // Add specific breakdown for multiple courses
-                if (remainingCourses > 1) {
-                    resultHTML += `<p style="margin-top: 8px; font-size: 0.85rem; color: var(--text-secondary);">
-                        This is the minimum average - you can score lower in some courses if you score higher in others.
-                    </p>`;
-                }
-            }
-
-            resultDiv.innerHTML = resultHTML;
-
-            // Generate scenarios if target is achievable
-            if (requiredAvgGradePoint <= 5.0 && remainingCourses >= 1) {
-                generateScenarios(currentPoints, currentAU, remainingCourses, remainingAUPerCourse, targetCGPA);
-            } else {
-                document.getElementById('scenarios-section').style.display = 'none';
-            }
+            return { totalPoints, totalAU };
         }
 
-        // Grade combinations helper
-        const gradeList = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'D+', 'D'];
-
-        function getClassificationForCGPA(cgpa) {
+        function getClassification(cgpa) {
             if (cgpa >= 4.5) return { name: 'First Class', class: 'first-class' };
             if (cgpa >= 4.0) return { name: 'Second Upper', class: 'second-upper' };
             if (cgpa >= 3.5) return { name: 'Second Lower', class: 'second-lower' };
@@ -1233,244 +1107,156 @@
             return { name: 'Below Req.', class: 'fail' };
         }
 
-        function calculateCGPAWithGrades(currentPoints, currentAU, grades, auPerCourse) {
-            let newPoints = currentPoints;
-            let newAU = currentAU;
-            grades.forEach(grade => {
-                newPoints += gradePoints[grade] * auPerCourse;
-                newAU += auPerCourse;
+        function generateAllCombinations() {
+            const numCourses = parseInt(document.getElementById('explore-courses').value) || 2;
+            const auPerCourse = parseInt(document.getElementById('explore-au').value) || 3;
+            const { totalPoints: currentPoints, totalAU: currentAU } = getCurrentTotals();
+
+            // Limit combinations for performance
+            const limitedGrades = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C'];
+
+            // Generate all combinations
+            const combinations = [];
+
+            function generateCombos(current, depth) {
+                if (depth === numCourses) {
+                    const grades = [...current];
+                    let newPoints = currentPoints;
+                    let newAU = currentAU;
+
+                    grades.forEach(g => {
+                        newPoints += gradePoints[g] * auPerCourse;
+                        newAU += auPerCourse;
+                    });
+
+                    const cgpa = newAU > 0 ? newPoints / newAU : 0;
+                    combinations.push({ grades, cgpa });
+                    return;
+                }
+
+                for (const grade of limitedGrades) {
+                    current.push(grade);
+                    generateCombos(current, depth + 1);
+                    current.pop();
+                }
+            }
+
+            generateCombos([], 0);
+
+            // Sort by CGPA and categorize
+            combinations.sort((a, b) => b.cgpa - a.cgpa);
+
+            // Remove duplicates (same grades in different order)
+            const unique = [];
+            const seen = new Set();
+            combinations.forEach(combo => {
+                const key = [...combo.grades].sort().join(',');
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    unique.push(combo);
+                }
             });
-            return newPoints / newAU;
+
+            // Categorize: Best (>=4.0), Mid (3.0-3.99), Low (<3.0)
+            const best = unique.filter(c => c.cgpa >= 4.0).slice(0, 15);
+            const mid = unique.filter(c => c.cgpa >= 3.0 && c.cgpa < 4.0).slice(0, 15);
+            const low = unique.filter(c => c.cgpa < 3.0).slice(0, 15);
+
+            renderCombinations(best, mid, low, unique.length);
         }
 
-        function generateScenarios(currentPoints, currentAU, numCourses, auPerCourse, targetCGPA) {
-            const scenariosSection = document.getElementById('scenarios-section');
-            const bestList = document.getElementById('scenarios-best');
-            const midList = document.getElementById('scenarios-mid');
-            const worstList = document.getElementById('scenarios-worst');
+        function renderCombinations(best, mid, low, total) {
+            const container = document.getElementById('combinations-container');
 
-            // Clear previous scenarios
-            bestList.innerHTML = '';
-            midList.innerHTML = '';
-            worstList.innerHTML = '';
-
-            const scenarios = {
-                best: [],
-                mid: [],
-                worst: []
-            };
-
-            // Generate Best Case Scenarios (mostly A+ and A)
-            const bestCombos = [
-                Array(numCourses).fill('A+'),
-                Array(numCourses).fill('A'),
-                numCourses > 1 ? [...Array(numCourses - 1).fill('A+'), 'A-'] : ['A+'],
-                numCourses > 1 ? [...Array(Math.ceil(numCourses/2)).fill('A+'), ...Array(Math.floor(numCourses/2)).fill('A')] : ['A+']
-            ];
-
-            bestCombos.forEach(combo => {
-                const cgpa = calculateCGPAWithGrades(currentPoints, currentAU, combo, auPerCourse);
-                if (cgpa >= targetCGPA) {
-                    scenarios.best.push({ grades: combo, cgpa });
-                }
-            });
-
-            // Generate Mid Case Scenarios (mix of A-, B+, B)
-            const midCombos = [];
-            if (numCourses === 1) {
-                midCombos.push(['A-'], ['B+'], ['B']);
-            } else if (numCourses === 2) {
-                midCombos.push(['A-', 'B+'], ['A', 'B'], ['B+', 'B+'], ['A-', 'A-']);
-            } else if (numCourses === 3) {
-                midCombos.push(['A-', 'B+', 'B+'], ['A', 'B+', 'B'], ['B+', 'B+', 'B+'], ['A-', 'A-', 'B']);
-            } else {
-                // For more courses, generate balanced combinations
-                const halfA = Math.floor(numCourses / 2);
-                midCombos.push([...Array(halfA).fill('A-'), ...Array(numCourses - halfA).fill('B+')]);
-                midCombos.push([...Array(halfA).fill('B+'), ...Array(numCourses - halfA).fill('B')]);
-                midCombos.push(Array(numCourses).fill('B+'));
-                midCombos.push([...Array(Math.ceil(numCourses/3)).fill('A'), ...Array(numCourses - Math.ceil(numCourses/3)).fill('B')]);
-            }
-
-            midCombos.forEach(combo => {
-                const cgpa = calculateCGPAWithGrades(currentPoints, currentAU, combo, auPerCourse);
-                if (cgpa >= targetCGPA) {
-                    scenarios.mid.push({ grades: combo, cgpa });
-                }
-            });
-
-            // Generate Worst Case Scenarios (minimum to just meet target)
-            const requiredTotalPoints = targetCGPA * (currentAU + numCourses * auPerCourse);
-            const neededPoints = requiredTotalPoints - currentPoints;
-            const avgNeeded = neededPoints / (numCourses * auPerCourse);
-
-            // Find the minimum grade that meets the average
-            let minGrade = 'A+';
-            for (const grade of gradeList) {
-                if (gradePoints[grade] >= avgNeeded) {
-                    minGrade = grade;
-                }
-            }
-
-            const worstCombos = [];
-            if (numCourses === 1) {
-                // For single course, just use the minimum grade needed
-                const singleGrades = gradeList.filter(g => {
-                    const cgpa = calculateCGPAWithGrades(currentPoints, currentAU, [g], auPerCourse);
-                    return cgpa >= targetCGPA;
-                });
-                singleGrades.slice(-3).forEach(g => worstCombos.push([g]));
-            } else {
-                // For multiple courses, find combinations that just barely meet target
-                const minGradeIndex = gradeList.indexOf(minGrade);
-
-                // Combination: all minimum grade
-                if (calculateCGPAWithGrades(currentPoints, currentAU, Array(numCourses).fill(minGrade), auPerCourse) >= targetCGPA) {
-                    worstCombos.push(Array(numCourses).fill(minGrade));
-                }
-
-                // One grade higher, rest lower
-                if (minGradeIndex > 0 && minGradeIndex < gradeList.length - 1) {
-                    const higherGrade = gradeList[minGradeIndex - 1];
-                    const lowerGrade = gradeList[Math.min(minGradeIndex + 1, gradeList.length - 1)];
-                    const mixedCombo = [higherGrade, ...Array(numCourses - 1).fill(lowerGrade)];
-                    if (calculateCGPAWithGrades(currentPoints, currentAU, mixedCombo, auPerCourse) >= targetCGPA) {
-                        worstCombos.push(mixedCombo);
-                    }
-                }
-
-                // Try one step below minimum for most, compensate with higher
-                if (minGradeIndex < gradeList.length - 1) {
-                    const belowMinGrade = gradeList[minGradeIndex + 1];
-                    for (let numLower = 1; numLower < numCourses; numLower++) {
-                        for (let higherIdx = 0; higherIdx <= minGradeIndex; higherIdx++) {
-                            const higherGrade = gradeList[higherIdx];
-                            const combo = [...Array(numCourses - numLower).fill(higherGrade), ...Array(numLower).fill(belowMinGrade)];
-                            const cgpa = calculateCGPAWithGrades(currentPoints, currentAU, combo, auPerCourse);
-                            if (cgpa >= targetCGPA && cgpa < targetCGPA + 0.15) {
-                                worstCombos.push(combo);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            worstCombos.forEach(combo => {
-                const cgpa = calculateCGPAWithGrades(currentPoints, currentAU, combo, auPerCourse);
-                if (cgpa >= targetCGPA) {
-                    scenarios.worst.push({ grades: combo, cgpa });
-                }
-            });
-
-            // Remove duplicates and sort
-            Object.keys(scenarios).forEach(category => {
-                const seen = new Set();
-                scenarios[category] = scenarios[category]
-                    .filter(s => {
-                        const key = s.grades.sort().join(',');
-                        if (seen.has(key)) return false;
-                        seen.add(key);
-                        return true;
-                    })
-                    .sort((a, b) => b.cgpa - a.cgpa)
-                    .slice(0, 3);
-            });
-
-            // Render scenarios
-            const renderScenario = (scenario, index, category) => {
-                const classification = getClassificationForCGPA(scenario.cgpa);
-                const gradesHTML = scenario.grades.map((g, i) =>
-                    `<span class="grade-chip"><span class="course-num">C${i+1}:</span><span class="grade-value">${g}</span></span>`
+            const renderComboCard = (combo, index) => {
+                const classification = getClassification(combo.cgpa);
+                const gradesHTML = combo.grades.map(g =>
+                    `<span class="combo-grade-chip">${g}</span>`
                 ).join('');
 
                 return `
-                    <div class="scenario-card" onclick="selectScenario(this, '${category}', ${index})">
-                        <div class="scenario-header">
-                            <span class="scenario-cgpa">CGPA: ${scenario.cgpa.toFixed(2)}</span>
-                            <span class="scenario-badge classification-badge ${classification.class}">${classification.name}</span>
+                    <div class="combo-card" onclick="selectCombo(this)" style="animation-delay: ${index * 0.05}s">
+                        <div class="combo-cgpa">
+                            CGPA: ${combo.cgpa.toFixed(2)}
+                            <span class="classification-badge ${classification.class}" style="font-size: 0.7rem; padding: 3px 8px; margin-left: 8px;">${classification.name}</span>
                         </div>
-                        <div class="scenario-grades">${gradesHTML}</div>
-                        <button class="apply-scenario-btn" onclick="event.stopPropagation(); applyScenario([${scenario.grades.map(g => `'${g}'`).join(',')}])">
-                            Apply This Scenario
+                        <div class="combo-grades">${gradesHTML}</div>
+                        <button class="combo-apply-btn" onclick="event.stopPropagation(); applyCombo([${combo.grades.map(g => `'${g}'`).join(',')}])">
+                            Apply This Combination
                         </button>
                     </div>
                 `;
             };
 
-            // Populate lists
-            if (scenarios.best.length > 0) {
-                bestList.innerHTML = scenarios.best.map((s, i) => renderScenario(s, i, 'best')).join('');
-            } else {
-                bestList.innerHTML = '<div class="no-scenarios">No scenarios in this category meet the target</div>';
-            }
+            container.innerHTML = `
+                <div class="combinations-grid">
+                    <div class="combo-category">
+                        <div class="combo-category-header best-header">
+                            <span class="combo-category-icon">🌟</span>
+                            <div class="combo-category-info">
+                                <h4>Best Outcomes</h4>
+                                <p>CGPA 4.0 and above</p>
+                            </div>
+                            <span class="combo-count">${best.length}</span>
+                        </div>
+                        <div class="combo-list">
+                            ${best.length > 0 ? best.map((c, i) => renderComboCard(c, i)).join('') : '<div class="no-combos">No combinations in this range</div>'}
+                        </div>
+                    </div>
 
-            if (scenarios.mid.length > 0) {
-                midList.innerHTML = scenarios.mid.map((s, i) => renderScenario(s, i, 'mid')).join('');
-            } else {
-                midList.innerHTML = '<div class="no-scenarios">No scenarios in this category meet the target</div>';
-            }
+                    <div class="combo-category">
+                        <div class="combo-category-header mid-header">
+                            <span class="combo-category-icon">⚡</span>
+                            <div class="combo-category-info">
+                                <h4>Mid Range</h4>
+                                <p>CGPA 3.0 - 3.99</p>
+                            </div>
+                            <span class="combo-count">${mid.length}</span>
+                        </div>
+                        <div class="combo-list">
+                            ${mid.length > 0 ? mid.map((c, i) => renderComboCard(c, i)).join('') : '<div class="no-combos">No combinations in this range</div>'}
+                        </div>
+                    </div>
 
-            if (scenarios.worst.length > 0) {
-                worstList.innerHTML = scenarios.worst.map((s, i) => renderScenario(s, i, 'worst')).join('');
-            } else {
-                worstList.innerHTML = '<div class="no-scenarios">No scenarios in this category meet the target</div>';
-            }
+                    <div class="combo-category">
+                        <div class="combo-category-header low-header">
+                            <span class="combo-category-icon">📊</span>
+                            <div class="combo-category-info">
+                                <h4>Lower Range</h4>
+                                <p>CGPA below 3.0</p>
+                            </div>
+                            <span class="combo-count">${low.length}</span>
+                        </div>
+                        <div class="combo-list">
+                            ${low.length > 0 ? low.map((c, i) => renderComboCard(c, i)).join('') : '<div class="no-combos">No combinations in this range</div>'}
+                        </div>
+                    </div>
+                </div>
 
-            // Store scenarios for later use
-            window.currentScenarios = scenarios;
-
-            // Show scenarios section
-            scenariosSection.style.display = 'block';
-
-            // Auto-expand best case
-            document.getElementById('scenarios-best').classList.add('expanded');
-            document.getElementById('toggle-best').classList.add('expanded');
+                <div class="total-combos">
+                    Total unique combinations: ${total}
+                </div>
+            `;
         }
 
-        function toggleCategory(category) {
-            const list = document.getElementById(`scenarios-${category}`);
-            const toggle = document.getElementById(`toggle-${category}`);
-            list.classList.toggle('expanded');
-            toggle.classList.toggle('expanded');
-        }
-
-        function selectScenario(element, category, index) {
-            // Remove selection from all cards
-            document.querySelectorAll('.scenario-card').forEach(card => card.classList.remove('selected'));
-            // Add selection to clicked card
+        function selectCombo(element) {
+            document.querySelectorAll('.combo-card').forEach(card => card.classList.remove('selected'));
             element.classList.add('selected');
         }
 
-        function applyScenario(grades) {
-            const container = document.getElementById('courses-container');
-            const existingCourses = container.querySelectorAll('.course-entry');
-            const numExisting = existingCourses.length;
-
-            // Count how many have grades already
-            let gradedCount = 0;
-            existingCourses.forEach(course => {
-                const id = course.id.split('-')[1];
-                if (document.getElementById(`grade-${id}`).value) {
-                    gradedCount++;
-                }
-            });
-
-            // Add new courses for the scenario
+        function applyCombo(grades) {
             grades.forEach((grade, index) => {
                 addCourse();
                 const newCourseId = courseCount;
-                document.getElementById(`name-${newCourseId}`).value = `Scenario Course ${index + 1}`;
+                document.getElementById(`name-${newCourseId}`).value = `Future Course ${index + 1}`;
                 document.getElementById(`grade-${newCourseId}`).value = grade;
             });
 
             calculateGPA();
-
-            // Scroll to results
-            document.getElementById('results-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById('results-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // Add some initial courses to get started
+        // Initialize
         window.onload = function() {
             addCourse();
             addCourse();
