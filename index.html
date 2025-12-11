@@ -485,6 +485,11 @@
                 font-size: 0.65rem;
                 padding: 4px 8px;
             }
+
+            /* Target calculator mobile styles */
+            #target-calculator > div[style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
         }
     </style>
 </head>
@@ -580,6 +585,40 @@
             <div class="classification">
                 <p style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.9rem;">Degree Classification</p>
                 <span class="classification-badge" id="classification">N/A</span>
+            </div>
+        </div>
+
+        <!-- Target GPA Calculator -->
+        <div class="card" id="target-calculator" style="display: none;">
+            <h2 class="card-title">Target CGPA Calculator</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                Your current CGPA is below 4.0 (Second Class Upper). Calculate what grades you need in remaining courses to achieve your target.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div>
+                    <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">Remaining Courses</label>
+                    <input type="number" id="remaining-courses" min="1" max="20" value="1" onchange="calculateTarget()" style="width: 100%;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">AU per Course</label>
+                    <input type="number" id="remaining-au" min="1" max="12" value="3" onchange="calculateTarget()" style="width: 100%;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div>
+                    <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">Target CGPA</label>
+                    <select id="target-cgpa" onchange="calculateTarget()" style="width: 100%;">
+                        <option value="4.0">4.0 (Second Upper)</option>
+                        <option value="4.5">4.5 (First Class)</option>
+                    </select>
+                </div>
+                <div></div>
+            </div>
+
+            <div id="target-result" class="info-note" style="background: #e8f5e9; border-left-color: #4caf50;">
+                <!-- Results will be shown here -->
             </div>
         </div>
 
@@ -748,6 +787,9 @@
 
             // Update classification
             updateClassification(cgpa, validCourses);
+
+            // Update target calculator
+            calculateTarget();
         }
 
         function updateClassification(cgpa, courseCount) {
@@ -778,6 +820,153 @@
                 badge.textContent = 'Below Graduation Requirement';
                 badge.className = 'classification-badge fail';
             }
+        }
+
+        function calculateTarget() {
+            const container = document.getElementById('courses-container');
+            const courses = container.querySelectorAll('.course-entry');
+            const resultDiv = document.getElementById('target-result');
+            const targetCalc = document.getElementById('target-calculator');
+
+            // Get current totals
+            let currentPoints = 0;
+            let currentAU = 0;
+
+            courses.forEach(course => {
+                const id = course.id.split('-')[1];
+                const au = parseFloat(document.getElementById(`au-${id}`).value) || 0;
+                const grade = document.getElementById(`grade-${id}`).value;
+
+                if (grade && au > 0) {
+                    const points = gradePoints[grade];
+                    currentPoints += points * au;
+                    currentAU += au;
+                }
+            });
+
+            const currentCGPA = currentAU > 0 ? (currentPoints / currentAU) : 0;
+
+            // Show/hide calculator based on CGPA
+            if (currentCGPA > 0 && currentCGPA < 4.0) {
+                targetCalc.style.display = 'block';
+            } else {
+                targetCalc.style.display = 'none';
+                return;
+            }
+
+            // Get remaining courses info
+            const remainingCourses = parseInt(document.getElementById('remaining-courses').value) || 1;
+            const remainingAUPerCourse = parseInt(document.getElementById('remaining-au').value) || 3;
+            const targetCGPA = parseFloat(document.getElementById('target-cgpa').value);
+
+            const totalRemainingAU = remainingCourses * remainingAUPerCourse;
+            const totalAU = currentAU + totalRemainingAU;
+
+            // Calculate required points for target CGPA
+            // targetCGPA = (currentPoints + requiredPoints) / totalAU
+            // requiredPoints = (targetCGPA * totalAU) - currentPoints
+            const requiredPoints = (targetCGPA * totalAU) - currentPoints;
+            const requiredAvgGradePoint = requiredPoints / totalRemainingAU;
+
+            // Calculate maximum possible CGPA (all A+ in remaining)
+            const maxPossiblePoints = currentPoints + (5.0 * totalRemainingAU);
+            const maxPossibleCGPA = maxPossiblePoints / totalAU;
+
+            // Determine the grade needed
+            let gradeNeeded = '';
+            let gradeClass = '';
+
+            if (requiredAvgGradePoint <= 0) {
+                gradeNeeded = 'Any passing grade';
+                gradeClass = 'success';
+            } else if (requiredAvgGradePoint <= 1.0) {
+                gradeNeeded = 'D (1.0)';
+                gradeClass = 'success';
+            } else if (requiredAvgGradePoint <= 1.5) {
+                gradeNeeded = 'D+ (1.5)';
+                gradeClass = 'success';
+            } else if (requiredAvgGradePoint <= 2.0) {
+                gradeNeeded = 'C (2.0)';
+                gradeClass = 'success';
+            } else if (requiredAvgGradePoint <= 2.5) {
+                gradeNeeded = 'C+ (2.5)';
+                gradeClass = 'success';
+            } else if (requiredAvgGradePoint <= 3.0) {
+                gradeNeeded = 'B- (3.0)';
+                gradeClass = 'success';
+            } else if (requiredAvgGradePoint <= 3.5) {
+                gradeNeeded = 'B (3.5)';
+                gradeClass = 'success';
+            } else if (requiredAvgGradePoint <= 4.0) {
+                gradeNeeded = 'B+ (4.0)';
+                gradeClass = 'warning';
+            } else if (requiredAvgGradePoint <= 4.5) {
+                gradeNeeded = 'A- (4.5)';
+                gradeClass = 'warning';
+            } else if (requiredAvgGradePoint <= 5.0) {
+                gradeNeeded = 'A/A+ (5.0)';
+                gradeClass = 'danger';
+            } else {
+                gradeNeeded = 'Not achievable';
+                gradeClass = 'impossible';
+            }
+
+            // Build result HTML
+            let resultHTML = '';
+
+            if (requiredAvgGradePoint > 5.0) {
+                resultDiv.style.background = '#ffebee';
+                resultDiv.style.borderLeftColor = '#f44336';
+                resultHTML = `
+                    <strong style="color: #c62828;">Target CGPA of ${targetCGPA.toFixed(2)} is not achievable.</strong>
+                    <p style="margin-top: 8px;">Even with A+ in all ${remainingCourses} remaining course(s), your maximum possible CGPA would be <strong>${maxPossibleCGPA.toFixed(2)}</strong>.</p>
+                    <p style="margin-top: 8px;">Required average: ${requiredAvgGradePoint.toFixed(2)} points (exceeds maximum of 5.0)</p>
+                `;
+
+                // Show what classification they can achieve
+                let maxClassification = '';
+                if (maxPossibleCGPA >= 4.5) {
+                    maxClassification = 'First Class Honours';
+                } else if (maxPossibleCGPA >= 4.0) {
+                    maxClassification = 'Second Class Upper';
+                } else if (maxPossibleCGPA >= 3.5) {
+                    maxClassification = 'Second Class Lower';
+                } else if (maxPossibleCGPA >= 3.0) {
+                    maxClassification = 'Third Class';
+                } else if (maxPossibleCGPA >= 2.5) {
+                    maxClassification = 'Pass';
+                } else {
+                    maxClassification = 'Below graduation requirement';
+                }
+
+                resultHTML += `<p style="margin-top: 8px;">Best achievable classification: <strong>${maxClassification}</strong></p>`;
+            } else {
+                if (gradeClass === 'success') {
+                    resultDiv.style.background = '#e8f5e9';
+                    resultDiv.style.borderLeftColor = '#4caf50';
+                } else if (gradeClass === 'warning') {
+                    resultDiv.style.background = '#fff3e0';
+                    resultDiv.style.borderLeftColor = '#ff9800';
+                } else {
+                    resultDiv.style.background = '#ffebee';
+                    resultDiv.style.borderLeftColor = '#f44336';
+                }
+
+                resultHTML = `
+                    <strong>To achieve CGPA ${targetCGPA.toFixed(2)}:</strong>
+                    <p style="margin-top: 8px;">You need an average grade of at least <strong>${gradeNeeded}</strong> across your ${remainingCourses} remaining course(s) (${totalRemainingAU} AUs total).</p>
+                    <p style="margin-top: 8px;">Required average grade points: <strong>${requiredAvgGradePoint.toFixed(2)}</strong></p>
+                `;
+
+                // Add specific breakdown for multiple courses
+                if (remainingCourses > 1) {
+                    resultHTML += `<p style="margin-top: 8px; font-size: 0.85rem; color: var(--text-secondary);">
+                        This is the minimum average - you can score lower in some courses if you score higher in others.
+                    </p>`;
+                }
+            }
+
+            resultDiv.innerHTML = resultHTML;
         }
 
         // Add some initial courses to get started
