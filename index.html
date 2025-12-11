@@ -591,8 +591,8 @@
         <!-- Target GPA Calculator -->
         <div class="card" id="target-calculator" style="display: none;">
             <h2 class="card-title">Target CGPA Calculator</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 16px;">
-                Your current CGPA is below 4.0 (Second Class Upper). Calculate what grades you need in remaining courses to achieve your target.
+            <p id="target-description" style="color: var(--text-secondary); margin-bottom: 16px;">
+                Calculate what grades you need in remaining courses to achieve your target CGPA.
             </p>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
@@ -827,6 +827,8 @@
             const courses = container.querySelectorAll('.course-entry');
             const resultDiv = document.getElementById('target-result');
             const targetCalc = document.getElementById('target-calculator');
+            const targetDescription = document.getElementById('target-description');
+            const targetSelect = document.getElementById('target-cgpa');
 
             // Get current totals
             let currentPoints = 0;
@@ -846,9 +848,23 @@
 
             const currentCGPA = currentAU > 0 ? (currentPoints / currentAU) : 0;
 
-            // Show/hide calculator based on CGPA
-            if (currentCGPA > 0 && currentCGPA < 4.0) {
+            // Show/hide calculator based on CGPA (show for CGPA < 4.5, i.e., not yet First Class)
+            if (currentCGPA > 0 && currentCGPA < 4.5) {
                 targetCalc.style.display = 'block';
+
+                // Update description and options based on current CGPA
+                if (currentCGPA >= 4.0) {
+                    targetDescription.textContent = 'You have Second Class Upper! Calculate what grades you need to achieve First Class Honours (4.5+).';
+                    // Only show 4.5 option
+                    targetSelect.innerHTML = '<option value="4.5">4.5 (First Class)</option>';
+                } else {
+                    targetDescription.textContent = 'Calculate what grades you need in remaining courses to achieve your target CGPA.';
+                    // Show both options
+                    targetSelect.innerHTML = `
+                        <option value="4.0">4.0 (Second Upper)</option>
+                        <option value="4.5">4.5 (First Class)</option>
+                    `;
+                }
             } else {
                 targetCalc.style.display = 'none';
                 return;
